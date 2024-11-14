@@ -22,7 +22,7 @@ gradlePlugin {
         create("privateRepositoryPlugin") {
             displayName = "Private Repository Plugin"
             description = "This plugin reduces repetition when specifying private GitHub packages as gradle dependencies"
-            id = "io.github.evanc-mfw.private-repository-plugin"
+            id = "io.github.evancmfw.private-repository-plugin"
             implementationClass = "io.github.evancmfw.gradle.PrivateRepositoryPlugin"
             tags = listOf("tooling", "kotlin")
         }
