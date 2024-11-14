@@ -4,8 +4,8 @@ plugins {
     `java-gradle-plugin`
 }
 
-group = "com.moneyforward.gradle"
-version = "0.1.0"
+group = "io.github.evancmfw.gradle"
+version = "0.1.1"
 
 repositories {
     mavenCentral()
@@ -22,8 +22,8 @@ gradlePlugin {
         create("privateRepositoryPlugin") {
             displayName = "Private Repository Plugin"
             description = "This plugin reduces repetition when specifying private GitHub packages as gradle dependencies"
-            id = "com.moneyforward.private-repository-plugin"
-            implementationClass = "com.moneyforward.gradle.PrivateRepositoryPlugin"
+            id = "io.github.evanc-mfw.private-repository-plugin"
+            implementationClass = "io.github.evancmfw.gradle.PrivateRepositoryPlugin"
             tags = listOf("tooling", "kotlin")
         }
     }

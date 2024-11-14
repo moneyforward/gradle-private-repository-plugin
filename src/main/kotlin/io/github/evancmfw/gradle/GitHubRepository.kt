@@ -1,4 +1,4 @@
-package com.moneyforward.gradle
+package io.github.evancmfw.gradle
 
 import java.net.URI
 
