@@ -24,6 +24,7 @@ gradlePlugin {
             description = "This plugin reduces repetition when specifying private GitHub packages as gradle dependencies"
             id = "com.moneyforward.private-repository-plugin"
             implementationClass = "com.moneyforward.gradle.PrivateRepositoryPlugin"
+            tags = listOf("tooling", "kotlin")
         }
     }
 }
