@@ -23,8 +23,8 @@ fun RepositoryHandler.private(configure: PrivateRepositoryConfiguration.() -> Un
 class PrivateRepositoryPlugin : Plugin<Project> {
     companion object {
         internal val PLUGIN_DATA = PrivateRepositoryConfiguration()
-        internal const val USERNAME_PROPERTY = "moneyforward.github.username"
-        internal const val TOKEN_PROPERTY = "moneyforward.github.token"
+        internal const val USERNAME_PROPERTY = "private-repository.github.username"
+        internal const val TOKEN_PROPERTY = "private-repository.github.token"
     }
 
     override fun apply(project: Project) {
@@ -34,6 +34,8 @@ class PrivateRepositoryPlugin : Plugin<Project> {
 
         project.afterEvaluate {
             PLUGIN_DATA.repositories.forEach { repository ->
+                logger.debug("Getting credentials for repository {}, provider = {}",
+                    repository.url, repository.credentialProvider::class.simpleName)
                 val githubCredentials = repository.credentialProvider.getCredentials(project)
 
                 it.repositories.maven { maven ->

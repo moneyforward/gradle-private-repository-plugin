@@ -35,18 +35,24 @@ open class PropertyGitHubCredentialProvider internal constructor(
     override fun getCredentials(project: Project): GitHubRepositoryCredentials? {
         try {
             return GitHubRepositoryCredentials(
-                (project.findProperty(usernameProperty) as String?)!!,
-                (project.findProperty(tokenProperty) as String?)!!
+                requireNotNullOrEmpty(project.findProperty(usernameProperty) as String?),
+                requireNotNullOrEmpty(project.findProperty(tokenProperty) as String?)
             )
-        } catch (ex: NullPointerException) {
+        } catch (ex: IllegalArgumentException) {
             val allowEmptyCredentials = project.findProperty("com.moneyforward.allow-empty-credentials") as String?
 
-            if (allowEmptyCredentials.toBoolean()) {
+            if (allowEmptyCredentials?.toBoolean() ?: PrivateRepositoryPlugin.PLUGIN_DATA.allowEmptyCredentials) {
                 return null
             }
 
-            throw NullPointerException("Could not find github credentials. If building locally please configure" +
-                    "and run the `storeGitHubCredentials` task")
+            throw NullPointerException("Could not find github credentials. If building locally please configure " +
+                    "and run the `storeGitHubCredentials` task or check the following properties:" +
+                    "\n\t- $usernameProperty\n\t- $tokenProperty")
         }
+    }
+
+    private fun requireNotNullOrEmpty(string: String?): String {
+        if (string.isNullOrEmpty()) throw IllegalArgumentException("String cannot be null or empty")
+        return string
     }
 }

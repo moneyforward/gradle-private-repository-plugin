@@ -11,6 +11,12 @@ open class PrivateRepositoryConfiguration {
     private var mutableRepositories = mutableSetOf<GitHubRepository>()
 
     /**
+     * If false the plugin will throw an exception if it finds empty (or null) credentials. Defaults to false.
+     * The `com.moneyforward.allow-empty-credentials` property takes precedence over this value.
+     */
+    var allowEmptyCredentials: Boolean = false
+
+    /**
      * The set of private [repositories][GitHubRepository] to use in dependency resolution
      */
     var repositories: Set<GitHubRepository> set(value) {

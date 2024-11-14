@@ -4,6 +4,8 @@ import org.gradle.api.Project
 
 /**
  * An interface which provides a set of [GitHubRepositoryCredentials]
+ * @see PropertyGitHubCredentialProvider
+ * @see StaticCredentialProvider
  */
 interface GitHubCredentialProvider {
     /**
