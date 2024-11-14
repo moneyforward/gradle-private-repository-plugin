@@ -35,7 +35,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/moneyforward/spring-utils")
+            url = uri("https://maven.pkg.github.com/moneyforward/gradle-private-repository-plugin")
             credentials {
                 username = System.getenv("GITHUB_ACTOR")
                 password = System.getenv("GITHUB_TOKEN")
