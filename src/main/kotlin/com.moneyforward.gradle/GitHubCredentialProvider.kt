@@ -13,12 +13,12 @@ interface GitHubCredentialProvider {
      * may continue without attempting to download any related dependencies. This is primarily intended to be
      * used with CI/CD cached builds as credentials should not be required.
      */
-    fun getCredentials(project: Project): GitHubRepositoryCredentials?
+    fun getCredentials(propertyResolver: (String) -> Any?): GitHubRepositoryCredentials?
 
     /**
      * A NoOp [GitHubRepositoryCredentials] which always return a null set of credentials
      */
     object NoOp : GitHubCredentialProvider {
-        override fun getCredentials(project: Project): GitHubRepositoryCredentials? = null
+        override fun getCredentials(propertyResolver: (String) -> Any?): GitHubRepositoryCredentials? = null
     }
 }

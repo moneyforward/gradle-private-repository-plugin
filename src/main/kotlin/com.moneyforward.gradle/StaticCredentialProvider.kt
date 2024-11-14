@@ -11,7 +11,7 @@ class StaticCredentialProvider(
     private val username: String,
     private val token: String
 ) : GitHubCredentialProvider {
-    override fun getCredentials(project: Project): GitHubRepositoryCredentials? {
+    override fun getCredentials(propertyResolver: (String) -> Any?): GitHubRepositoryCredentials {
         return GitHubRepositoryCredentials(username, token)
     }
 }
