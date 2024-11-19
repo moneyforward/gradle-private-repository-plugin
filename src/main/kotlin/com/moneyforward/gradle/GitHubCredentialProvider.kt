@@ -1,6 +1,4 @@
-package io.github.evancmfw.gradle
-
-import org.gradle.api.Project
+package com.moneyforward.gradle
 
 /**
  * An interface which provides a set of [GitHubRepositoryCredentials]
@@ -13,12 +11,12 @@ interface GitHubCredentialProvider {
      * may continue without attempting to download any related dependencies. This is primarily intended to be
      * used with CI/CD cached builds as credentials should not be required.
      */
-    fun getCredentials(project: Project): GitHubRepositoryCredentials?
+    fun getCredentials(propertyDelegate: PropertyDelegate): GitHubRepositoryCredentials?
 
     /**
      * A NoOp [GitHubRepositoryCredentials] which always return a null set of credentials
      */
     object NoOp : GitHubCredentialProvider {
-        override fun getCredentials(project: Project): GitHubRepositoryCredentials? = null
+        override fun getCredentials(propertyDelegate: PropertyDelegate): GitHubRepositoryCredentials? = null
     }
 }

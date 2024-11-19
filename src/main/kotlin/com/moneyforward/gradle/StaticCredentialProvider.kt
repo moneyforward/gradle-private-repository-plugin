@@ -1,6 +1,4 @@
-package io.github.evancmfw.gradle
-
-import org.gradle.api.Project
+package com.moneyforward.gradle
 
 /**
  * A basic, static [GitHubCredentialProvider] which uses and returns hardcoded credentials.
@@ -11,7 +9,7 @@ class StaticCredentialProvider(
     private val username: String,
     private val token: String
 ) : GitHubCredentialProvider {
-    override fun getCredentials(project: Project): GitHubRepositoryCredentials? {
+    override fun getCredentials(propertyDelegate: PropertyDelegate): GitHubRepositoryCredentials {
         return GitHubRepositoryCredentials(username, token)
     }
 }

@@ -1,4 +1,4 @@
-package io.github.evancmfw.gradle
+package com.moneyforward.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty

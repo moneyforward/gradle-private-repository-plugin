@@ -1,4 +1,4 @@
-package io.github.evancmfw.gradle
+package com.moneyforward.gradle
 
 /**
  * A GitHub credentials entry, containing the username and token property names and the

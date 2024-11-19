@@ -1,6 +1,4 @@
-package io.github.evancmfw.gradle
-
-import org.gradle.api.Project
+package com.moneyforward.gradle
 
 /**
  * Configures and returns a [PropertyGitHubCredentialProvider]
@@ -32,16 +30,16 @@ open class PropertyGitHubCredentialProvider internal constructor(
         internal val propertyProviders = mutableMapOf<Pair<String, String>, PropertyGitHubCredentialProvider>()
     }
 
-    override fun getCredentials(project: Project): GitHubRepositoryCredentials? {
+    override fun getCredentials(propertyDelegate: PropertyDelegate): GitHubRepositoryCredentials? {
         try {
             return GitHubRepositoryCredentials(
-                requireNotNullOrEmpty(project.findProperty(usernameProperty) as String?),
-                requireNotNullOrEmpty(project.findProperty(tokenProperty) as String?)
+                requireNotNullOrEmpty(propertyDelegate.resolveTo(usernameProperty)),
+                requireNotNullOrEmpty(propertyDelegate.resolveTo(tokenProperty))
             )
         } catch (ex: IllegalArgumentException) {
-            val allowEmptyCredentials = project.findProperty("com.moneyforward.allow-empty-credentials") as String?
+            val allowEmptyCredentials = propertyDelegate.resolveTo<String?>("com.moneyforward.allow-empty-credentials")
 
-            if (allowEmptyCredentials?.toBoolean() ?: PrivateRepositoryPlugin.PLUGIN_DATA.allowEmptyCredentials) {
+            if (allowEmptyCredentials?.toBoolean() ?: PrivateRepositoryPlugin.PROJECT_PLUGIN_DATA.allowEmptyCredentials) {
                 return null
             }
 
