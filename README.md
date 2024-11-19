@@ -19,8 +19,8 @@ repositories {
     private { // plugin extension method
         allowEmptyCredentials = false // optional, defaults to false
         // reference to your GitHub package dependency
-        repository("https://maven.pkg.github.com/moneyforward/OWNER/REPOSITORY")
-        repository("https://maven.pkg.github.com/moneyforward/OWNER/OTHER_REPOSITORY") {
+        repository("https://maven.pkg.github.com/OWNER/REPOSITORY")
+        repository("https://maven.pkg.github.com/OWNER/OTHER_REPOSITORY") {
             // example for providing specific username and token to use in resolution
             credentialsProvider = StaticCredentialsProvider(
                 username = System.getEnv("GITHUB_USERNAME"),
