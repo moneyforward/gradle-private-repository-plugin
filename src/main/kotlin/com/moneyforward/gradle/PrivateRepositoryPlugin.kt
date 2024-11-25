@@ -37,9 +37,11 @@ class PrivateRepositoryPlugin : Plugin<Any> {
     private var logger: Logger? = null
 
     override fun apply(target: Any) {
-        if (target is Project) apply(target)
-        else if (target is Settings) apply(target)
-        else throw IllegalArgumentException("Invalid application of plugin for ${target::class.simpleName}")
+        when (target) {
+            is Project -> apply(target)
+            is Settings -> apply(target)
+            else -> throw IllegalArgumentException("Invalid application of plugin for ${target::class.simpleName}")
+        }
     }
 
     private fun apply(project: Project) {
