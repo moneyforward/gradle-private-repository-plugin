@@ -4,8 +4,8 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.initialization.Settings
+import org.gradle.api.logging.Logger
 import org.gradle.api.provider.Provider
-import org.slf4j.Logger
 
 /**
  * Configures the [private repository configuration][PrivateRepositoryConfiguration] used
@@ -46,11 +46,20 @@ class PrivateRepositoryPlugin : Plugin<Any> {
 
     private fun apply(project: Project) {
         logger = project.logger
+        val logger = project.logger
 
-        project.tasks.create("storeGitHubCredentials", StoreGitHubCredentialsTask::class.java)
+        project.tasks.create(StoreGitHubCredentialsTask.NAME, StoreGitHubCredentialsTask::class.java)
 
         project.afterEvaluate {
-            project.repositories.apply(ProjectPropertyDelegate(project), PROJECT_PLUGIN_DATA)
+            val tasks = it.gradle.startParameter.taskNames
+            // do not apply repository settings if running the storeGitHubCredentials task
+            if (tasks.any { task -> task == StoreGitHubCredentialsTask.NAME }) {
+                project.repositories.apply(ProjectPropertyDelegate(project), PROJECT_PLUGIN_DATA)
+                if (tasks.size > 1) logger.warn(
+                    "{} should be ran in isolation, running it with other tasks may cause unexpected issues.",
+                    StoreGitHubCredentialsTask.NAME
+                )
+            }
         }
     }
 

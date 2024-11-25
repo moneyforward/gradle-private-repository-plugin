@@ -2,8 +2,6 @@ package com.moneyforward.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
-import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
@@ -102,10 +100,11 @@ abstract class StoreGitHubCredentialsTask : DefaultTask() {
         return properties
     }
 
-    private companion object {
-        const val NONE          = 0
-        const val USERNAME_FLAG = 1
-        const val TOKEN_FLAG    = 2
-        const val ALL_FLAGS     = 3
+    companion object {
+        private const val NONE          = 0
+        private const val USERNAME_FLAG = 1
+        private const val TOKEN_FLAG    = 2
+        private const val ALL_FLAGS     = 3
+        internal const val NAME = "storeGitHubCredentials"
     }
 }
