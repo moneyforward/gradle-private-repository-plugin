@@ -75,11 +75,7 @@ abstract class StoreGitHubCredentialsTask : DefaultTask() {
 
         val newLines = mutableListOf<String>()
 
-        if ((checkFlags and USERNAME_FLAG) > 0) {
-            if (username.isNullOrEmpty()) {
-                throw NullPointerException("GitHub username cannot be null or empty. " +
-                        "Please check your environment variables or configure the task to use the correct username!")
-            }
+        if ((checkFlags and USERNAME_FLAG) > 0 && username != null) {
             newLines.add("${entry.usernameProperty}=$username")
         }
         if ((checkFlags and TOKEN_FLAG) > 0) {

@@ -62,6 +62,7 @@ class PrivateRepositoryPlugin : Plugin<Any> {
         propertyDelegate: PropertyDelegate,
         configuration: PrivateRepositoryConfiguration
     ) {
+        var emptyUsername = false
         configuration.repositories.forEach { repository ->
             logger?.debug("Getting credentials for repository {}, provider = {}",
                 repository.url, repository.credentialProvider::class.simpleName)
@@ -70,6 +71,7 @@ class PrivateRepositoryPlugin : Plugin<Any> {
             maven { maven ->
                 maven.url = repository.url
                 if (githubCredentials != null) {
+                    emptyUsername = emptyUsername || githubCredentials.username.isBlank()
                     maven.credentials { credentials ->
                         credentials.username = githubCredentials.username
                         credentials.password = githubCredentials.token
@@ -77,6 +79,10 @@ class PrivateRepositoryPlugin : Plugin<Any> {
                 }
             }
             logger?.debug("Registered new maven dependency: {}", repository.url)
+        }
+        if (emptyUsername) {
+            logger?.warn("Detected usage of unset or empty GitHub username for at least one repository. This may" +
+                    " result in an authorization issue depending on the token used.")
         }
         logger?.info("Configured ${PROJECT_PLUGIN_DATA.repositories.size} private repositories")
     }

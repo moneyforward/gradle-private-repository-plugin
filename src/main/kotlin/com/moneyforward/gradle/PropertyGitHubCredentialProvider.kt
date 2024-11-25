@@ -33,7 +33,7 @@ open class PropertyGitHubCredentialProvider internal constructor(
     override fun getCredentials(propertyDelegate: PropertyDelegate): GitHubRepositoryCredentials? {
         try {
             return GitHubRepositoryCredentials(
-                requireNotNullOrEmpty(propertyDelegate.resolveTo(usernameProperty)),
+                propertyDelegate.resolveTo<String>(usernameProperty) ?: "",
                 requireNotNullOrEmpty(propertyDelegate.resolveTo(tokenProperty))
             )
         } catch (ex: IllegalArgumentException) {
