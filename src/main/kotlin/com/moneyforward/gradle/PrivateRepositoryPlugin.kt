@@ -53,12 +53,12 @@ class PrivateRepositoryPlugin : Plugin<Any> {
         project.afterEvaluate {
             val tasks = it.gradle.startParameter.taskNames
             // do not apply repository settings if running the storeGitHubCredentials task
-            if (tasks.any { task -> task == StoreGitHubCredentialsTask.NAME }) {
+            if (tasks.none { task -> task == StoreGitHubCredentialsTask.NAME }) {
                 project.repositories.apply(ProjectPropertyDelegate(project), PROJECT_PLUGIN_DATA)
-                if (tasks.size > 1) logger.warn(
-                    "{} should be ran in isolation, running it with other tasks may cause unexpected issues.",
-                    StoreGitHubCredentialsTask.NAME
-                )
+            }
+            else if (tasks.size > 1) {
+                logger.warn("{} should be ran in isolation, running it with other " +
+                        "tasks may cause unexpected issues.", StoreGitHubCredentialsTask.NAME)
             }
         }
     }
