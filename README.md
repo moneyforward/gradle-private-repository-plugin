@@ -5,7 +5,7 @@ The `private-repository-plugin` is a simple plugin for making dependencies on pr
 Simply include the following as a gradle plugin:
 ```yaml
 plugins {
-  id("com.moneyforward.private-repository") version "0.3.0"
+  id("com.moneyforward.private-repository") version "0.3.1"
 }
 ```
 
