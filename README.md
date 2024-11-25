@@ -4,9 +4,8 @@ The `private-repository-plugin` is a simple plugin for making dependencies on pr
 ## Installation
 Simply include the following as a gradle plugin:
 ```yaml
-// kotlin DSL, but nearly identical for groovy
 plugins {
-  id("com.moneyforward.private-repository") version "0.0.0"
+  id("com.moneyforward.private-repository") version "0.3.0"
 }
 ```
 
@@ -20,6 +19,7 @@ repositories {
         allowEmptyCredentials = false // optional, defaults to false
         // reference to your GitHub package dependency
         repository("https://maven.pkg.github.com/OWNER/REPOSITORY")
+        repository(gpr("OWNER", "REPOSITORY")) // use gpr function for shortcut to GitHub packages URL
         repository("https://maven.pkg.github.com/OWNER/OTHER_REPOSITORY") {
             // example for providing specific username and token to use in resolution
             credentialsProvider = StaticCredentialsProvider(
@@ -28,6 +28,18 @@ repositories {
             )
         }
     }
+}
+```
+
+The plugin can also be used in the `settings.gradle` file to add resolution for plugins within build files.
+```kotlin
+// settings.gradle.kts
+plugins {
+    id("com.moneyforward.private-repository-plugin") version LATEST_VERSION_HERE
+}
+// additional block to specify repositories, with same configuration as used in build file
+privatePlugins {
+    repository(gpr("OWNER", "REPO"))
 }
 ```
 By default, repositories will use the following properties from the project's properties:
