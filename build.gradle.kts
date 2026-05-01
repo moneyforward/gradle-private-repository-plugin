@@ -1,11 +1,11 @@
 plugins {
-    kotlin("jvm") version "2.0.20"
+    kotlin("jvm") version "2.2.20"
     id("com.gradle.plugin-publish") version "1.2.1"
     `java-gradle-plugin`
 }
 
 group = "com.moneyforward.gradle"
-version = "0.3.4"
+version = "0.4.0"
 
 repositories {
     mavenCentral()
@@ -17,6 +17,10 @@ tasks.test {
 
 kotlin {
     jvmToolchain(11)
+}
+
+dependencies {
+    implementation("aws.sdk.kotlin:codeartifact:1.5.123") // Last version with kotlin 2.2 support
 }
 
 gradlePlugin {

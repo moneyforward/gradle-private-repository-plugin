@@ -3,7 +3,7 @@ package com.moneyforward.gradle
 /**
  * A data class containing a GitHub username and GitHub PAT token, used for verifying identity to GitHub packages
  */
-data class GitHubRepositoryCredentials(
+data class PackageRepositoryCredentials(
     val username: String,
-    val token: String
+    val token: String,
 )

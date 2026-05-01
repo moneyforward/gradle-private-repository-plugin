@@ -48,17 +48,17 @@ class PrivateRepositoryPlugin : Plugin<Any> {
         logger = project.logger
         val logger = project.logger
 
-        project.tasks.create(StoreGitHubCredentialsTask.NAME, StoreGitHubCredentialsTask::class.java)
+        project.tasks.create(StoreRepositoryCredentialsTask.NAME, StoreRepositoryCredentialsTask::class.java)
 
         project.afterEvaluate {
             val tasks = it.gradle.startParameter.taskNames
             // do not apply repository settings if running the storeGitHubCredentials task
-            if (tasks.none { task -> task == StoreGitHubCredentialsTask.NAME }) {
+            if (tasks.none { task -> task == StoreRepositoryCredentialsTask.NAME }) {
                 project.repositories.apply(ProjectPropertyDelegate(project), PROJECT_PLUGIN_DATA)
             }
             else if (tasks.size > 1) {
                 logger.warn("{} should be ran in isolation, running it with other " +
-                        "tasks may cause unexpected issues.", StoreGitHubCredentialsTask.NAME)
+                        "tasks may cause unexpected issues.", StoreRepositoryCredentialsTask.NAME)
             }
         }
     }
@@ -73,24 +73,25 @@ class PrivateRepositoryPlugin : Plugin<Any> {
     ) {
         var emptyUsername = false
         configuration.repositories.forEach { repository ->
-            logger?.debug("Getting credentials for repository {}, provider = {}",
-                repository.url, repository.credentialProvider::class.simpleName)
-            val githubCredentials = repository.credentialProvider.getCredentials(propertyDelegate)
+            val uri = repository.uriProvider.getUri(propertyDelegate)
+
+            logger?.debug("Getting credentials for repository {}, provider = {}", uri, repository.credentialProvider::class.simpleName)
+            val repositoryCredentials = repository.credentialProvider.getCredentials(propertyDelegate)
 
             maven { maven ->
-                maven.url = repository.url
-                if (githubCredentials != null) {
-                    emptyUsername = emptyUsername || githubCredentials.username.isBlank()
+                maven.url = uri
+                if (repositoryCredentials != null) {
+                    emptyUsername = emptyUsername || repositoryCredentials.username.isBlank()
                     maven.credentials { credentials ->
-                        credentials.username = githubCredentials.username
-                        credentials.password = githubCredentials.token
+                        credentials.username = repositoryCredentials.username
+                        credentials.password = repositoryCredentials.token
                     }
                 }
             }
-            logger?.debug("Registered new maven dependency: {}", repository.url)
+            logger?.debug("Registered new maven dependency: {}", repository.uriProvider)
         }
         if (emptyUsername) {
-            logger?.warn("Detected usage of unset or empty GitHub username for at least one repository. This may" +
+            logger?.warn("Detected usage of unset or empty package username for at least one repository. This may" +
                     " result in an authorization issue depending on the token used.")
         }
         logger?.info("Configured ${PROJECT_PLUGIN_DATA.repositories.size} private repositories")
