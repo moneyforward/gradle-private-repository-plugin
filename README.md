@@ -58,6 +58,10 @@ build files (`privatePlugins`) and for project dependencies including version ca
 
 ```kotlin
 // settings.gradle.kts
+import com.moneyforward.gradle.codeartifact.codeArtifactRepository
+import com.moneyforward.gradle.privatePlugins
+import com.moneyforward.gradle.privateDependencies
+
 plugins {
     id("com.moneyforward.private-repository-plugin") version "0.5.0"
 }

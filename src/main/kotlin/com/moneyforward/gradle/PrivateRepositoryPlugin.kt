@@ -75,9 +75,14 @@ class PrivateRepositoryPlugin : Plugin<Any> {
     }
 
     private fun apply(settings: Settings) {
-        val delegate = SettingsPropertyDelegate(settings)
-        settings.pluginManagement.repositories.apply(delegate, SETTINGS_PLUGIN_DATA)
-        settings.dependencyResolutionManagement.repositories.apply(delegate, SETTINGS_DEPENDENCY_DATA)
+        // Defer registration until settings.gradle(.kts) finishes evaluating so that
+        // privatePlugins { ... } / privateDependencies { ... } blocks (which run after
+        // the plugin is applied) have populated SETTINGS_*_DATA.
+        settings.gradle.settingsEvaluated {
+            val delegate = SettingsPropertyDelegate(settings)
+            settings.pluginManagement.repositories.apply(delegate, SETTINGS_PLUGIN_DATA)
+            settings.dependencyResolutionManagement.repositories.apply(delegate, SETTINGS_DEPENDENCY_DATA)
+        }
     }
 
     private fun RepositoryHandler.apply(
