@@ -1,82 +1,127 @@
 ## Private-Repository-Plugin
-The `private-repository-plugin` is a simple plugin for making dependencies on private GitHub packages easier.
+The `private-repository-plugin` is a Gradle plugin for making dependencies on private Maven repositories easier. It supports **GitHub Packages** and **AWS CodeArtifact** out of the box.
 
 ## Installation
-Simply include the following as a gradle plugin:
-```yaml
+```kotlin
 plugins {
-  id("com.moneyforward.private-repository") version "0.3.4"
+    id("com.moneyforward.private-repository-plugin") version "0.4.0"
 }
 ```
 
 ## Usage
-The `private-repository-plugin` consists of two main parts: dependency resolution and credential management.
+The plugin introduces two main features: dependency resolution and credential management.
+
 ### Dependency Resolution
-This plugin introduces the `.private` extension to the gradle `RepositoryHandler`. A complete setup is as follows:
+
+Use the `private` extension on `RepositoryHandler` to declare private repositories:
+
 ```kotlin
+// build.gradle.kts
 repositories {
-    private { // plugin extension method
+    private {
         allowEmptyCredentials = false // optional, defaults to false
-        // reference to your GitHub package dependency
+
+        // GitHub Packages — full URL
         repository("https://maven.pkg.github.com/OWNER/REPOSITORY")
-        repository(gpr("OWNER", "REPOSITORY")) // use gpr function for shortcut to GitHub packages URL
-        repository("https://maven.pkg.github.com/OWNER/OTHER_REPOSITORY") {
-            // example for providing specific username and token to use in resolution
-            credentialsProvider = StaticCredentialsProvider(
-                username = System.getEnv("GITHUB_USERNAME"),
-                token = System.getEnv("GITHUB_TOKEN")
+
+        // GitHub Packages — shorthand helper
+        repository(gpr("OWNER", "REPOSITORY"))
+
+        // GitHub Packages — with explicit credentials
+        repository(gpr("OWNER", "REPOSITORY")) {
+            credentialProvider = StaticCredentialProvider(
+                username = System.getenv("GITHUB_USERNAME"),
+                token = System.getenv("GITHUB_TOKEN")
             )
+        }
+
+        // AWS CodeArtifact
+        codeArtifactRepository(
+            domain = "my-domain",
+            repository = "my-repo",
+            domainOwner = "123456789012",   // optional: AWS account ID
+            ssoProfile = "my-sso-profile", // optional: named AWS SSO profile
+        )
+
+        // AWS CodeArtifact — builder-block style
+        codeArtifactRepository {
+            domain = "my-domain"
+            repository = "my-repo"
         }
     }
 }
 ```
 
-The plugin can also be used in the `settings.gradle` file to add resolution for plugins within build files.
+The plugin can also be applied in `settings.gradle.kts` to add resolution for plugins used inside build files:
+
 ```kotlin
 // settings.gradle.kts
 plugins {
-    id("com.moneyforward.private-repository-plugin") version LATEST_VERSION_HERE
+    id("com.moneyforward.private-repository-plugin") version "0.4.0"
 }
-// additional block to specify repositories, with same configuration as used in build file
+
 privatePlugins {
     repository(gpr("OWNER", "REPO"))
+
+    codeArtifactRepository(
+        domain = "my-domain",
+        repository = "my-repo",
+    )
 }
 ```
-By default, repositories will use the following properties from the project's properties:
+
+#### GitHub Packages default credentials
+
+By default, GitHub Packages repositories read credentials from Gradle project properties:
+
 ```properties
+# ~/.gradle/gradle.properties
 private-repository.github.username=YOUR_GITHUB_USERNAME
 private-repository.github.token=YOUR_GITHUB_TOKEN
 ```
-**IMPORTANT** If the plugin CANNOT find valid credentials it will throw an exception, even if a build is not in progress.
-This can be disabled via the `com.moneyforward.allow-empty-credentials` property OR with the `allowEmptyCredentials`
-field within the `private` block.
+
+#### AWS CodeArtifact credentials
+
+CodeArtifact repositories fetch a short-lived authorization token from AWS at build time using the
+[AWS SDK default credential chain](https://docs.aws.amazon.com/sdk-for-kotlin/latest/developer-guide/credential-providers.html).
+Specify `ssoProfile` to authenticate via a named AWS SSO profile instead.
+
+**IMPORTANT:** If the plugin cannot find valid credentials it will throw an exception, even if no
+dependency resolution is in progress. This can be disabled via the `com.moneyforward.allow-empty-credentials`
+Gradle property or the `allowEmptyCredentials` field inside the `private` block.
+
+---
 
 ### Credential Management
-The `private-repository-plugin` introduces a **manual** gradle task `storeGitHubCredentials` which automatically appends
-your GitHub credentials to the system `gradle.properties`.
 
-By default, these credentials are picked up from the 
-`GRADLE_GITHUB_USERNAME` and `GRADLE_GITHUB_TOKEN` environment variables and are appended as `private-repository.github.username`
-and `private-repository.github.token` respectively.
+The plugin registers a **manual** Gradle task `storeRepositoryCredentials` that appends GitHub
+credentials to the system `gradle.properties` file.
 
-However, the task also provides a configuration for introducing other
-properties and ability to specify the credentials.
+By default, credentials are read from the `GRADLE_PRIVATE_REPO_USERNAME` and `GRADLE_PRIVATE_REPO_TOKEN`
+environment variables and written as `private-repository.github.username` and
+`private-repository.github.token`.
+
+The task can be extended to handle multiple credential sets:
+
 ```kotlin
-// kotlin-dsl
-tasks.named("storeGitHubCredentials", StoreGitHubCredentialsTask::class) {
-    withDefaultEntry() // specify usage of private-repository.github... required when adding other entries
-    addEntry("private.company2.github") { // add entry for private.company2.github.username and private.company2.github.token
-        // specify username and token via non-default environment variables
+// build.gradle.kts
+tasks.named("storeRepositoryCredentials", StoreRepositoryCredentialsTask::class) {
+    withDefaultEntry() // include the default private-repository.github.* entry
+
+    addEntry("private.company2.github") { // writes private.company2.github.username / .token
         username = System.getenv("COMPANY2_GITHUB_USERNAME")
         token = System.getenv("COMPANY2_GITHUB_TOKEN")
     }
 }
 ```
 
-### Motivation
-Multiple dependencies on private GitHub packages require the duplication of the same block of code, as each repository
-requires its own maven block. This can result in lengthy build.gradle files.
+---
 
-Additionally, translating environment variables (used in CI/CD) to gradle.properties (used in docker images) is an
-annoying process to stream-line. This plugin addresses the problem via the custom gradle task that can be ran in CI/CD
-which automatically applies environment variables to the gradle.properties.
+### Motivation
+
+Multiple private repository dependencies normally require duplicating a `maven { ... }` block for
+each one, leading to lengthy build files. This plugin collapses all of that into a single `private`
+block with a concise DSL.
+
+The `storeRepositoryCredentials` task solves the CI/CD-to-Docker-image credential handoff problem
+by automatically translating environment variables into `gradle.properties` entries.

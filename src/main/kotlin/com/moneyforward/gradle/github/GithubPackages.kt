@@ -1,13 +1,8 @@
-package com.moneyforward.gradle
+package com.moneyforward.gradle.github
 
 import java.net.URI
 
 const val GPR_URL = "https://maven.pkg.github.com/"
-
-/**
- * A GitHub repository definition containing a URL and [credentials provider][GitHubCredentialProvider]
- */
-data class GitHubRepository(var url: URI, var credentialProvider: GitHubCredentialProvider)
 
 /**
  * Returns a new [URI] by prepending the github-packages url to the given string
@@ -27,3 +22,4 @@ fun gpr(ownerAndRepository: String): URI {
 fun gpr(owner: String, repository: String): URI {
     return URI(GPR_URL + owner.trim('/') + '/' + repository.trim('/'))
 }
+
