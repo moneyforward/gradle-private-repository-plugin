@@ -1,6 +1,6 @@
 package com.moneyforward.gradle
 
-import com.moneyforward.gradle.provider.PackageCredentialProvider
+import com.moneyforward.gradle.provider.PackageRepositoryCredentialProvider
 import com.moneyforward.gradle.provider.gradlePropertiesProvider
 import java.net.URI
 
@@ -22,13 +22,13 @@ open class PrivateRepositoryConfiguration {
     /**
      * Adds and a new [PackageRepository] to the configuration
      * @param url the [URI] of the GitHub repository
-     * @param credentialProvider the [com.moneyforward.gradle.provider.PackageCredentialProvider] to use for authentication with GitHub packages
+     * @param credentialProvider the [com.moneyforward.gradle.provider.PackageRepositoryCredentialProvider] to use for authentication with GitHub packages
      * @param configure the configuration block for the [PackageRepository]
      * @return a configured [PackageRepository]
      */
     fun repository(
         url: URI,
-        credentialProvider: PackageCredentialProvider = gradlePropertiesProvider(),
+        credentialProvider: PackageRepositoryCredentialProvider = gradlePropertiesProvider(),
         configure: PackageRepository.() -> Unit = {}
     ) {
         repository(PackageRepository.create(url, credentialProvider), configure)
@@ -37,13 +37,13 @@ open class PrivateRepositoryConfiguration {
     /**
      * Adds and a new [PackageRepository] to the configuration
      * @param url the url of the GitHub repository
-     * @param credentialProvider the [PackageCredentialProvider] to use for authentication with GitHub packages
+     * @param credentialProvider the [PackageRepositoryCredentialProvider] to use for authentication with GitHub packages
      * @param configure the configuration block for the [PackageRepository]
      * @return a configured [PackageRepository]
      */
     fun repository(
         url: String,
-        credentialProvider: PackageCredentialProvider = gradlePropertiesProvider(),
+        credentialProvider: PackageRepositoryCredentialProvider = gradlePropertiesProvider(),
         configure: PackageRepository.() -> Unit = {}
     ) = repository(URI(url), credentialProvider, configure)
 

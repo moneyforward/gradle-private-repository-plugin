@@ -8,7 +8,7 @@ import com.moneyforward.gradle.PropertyDelegate
  * @see PropertyPackageCredentialProvider
  * @see StaticCredentialProvider
  */
-fun interface PackageCredentialProvider {
+fun interface PackageRepositoryCredentialProvider {
     /**
      * Returns a nullable set of [com.moneyforward.gradle.PackageRepositoryCredentials]. If null, the dependency resolution
      * may continue without attempting to download any related dependencies. This is primarily intended to be
@@ -19,7 +19,7 @@ fun interface PackageCredentialProvider {
     /**
      * A NoOp [PackageRepositoryCredentials] which always return a null set of credentials
      */
-    object NoOp : PackageCredentialProvider {
+    object NoOp : PackageRepositoryCredentialProvider {
         override fun getCredentials(propertyDelegate: PropertyDelegate): PackageRepositoryCredentials? = null
     }
 }

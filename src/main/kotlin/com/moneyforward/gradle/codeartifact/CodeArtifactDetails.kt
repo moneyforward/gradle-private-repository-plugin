@@ -11,13 +11,13 @@ package com.moneyforward.gradle.codeartifact
 class CodeArtifactDetails {
     lateinit var domain: String
     lateinit var repository: String
-    var domainOwner: Long? = null
+    var domainOwner: String? = null
     var ssoProfile: String? = null
     var region: String? = null
 
     constructor()
 
-    constructor(domain: String, repository: String, domainOwner: Long? = null, region: String? = null, ssoProfile: String? = null) {
+    constructor(domain: String, repository: String, domainOwner: String? = null, region: String? = null, ssoProfile: String? = null) {
         this.domain = domain
         this.repository = repository
         this.domainOwner = domainOwner

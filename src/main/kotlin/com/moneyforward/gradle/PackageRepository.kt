@@ -1,6 +1,6 @@
 package com.moneyforward.gradle
 
-import com.moneyforward.gradle.provider.PackageCredentialProvider
+import com.moneyforward.gradle.provider.PackageRepositoryCredentialProvider
 import com.moneyforward.gradle.provider.PackageRepositoryUriProvider
 import com.moneyforward.gradle.provider.StaticUriProvider
 import java.net.URI
@@ -13,7 +13,7 @@ import java.net.URI
  */
 interface PackageRepository {
     val uriProvider: PackageRepositoryUriProvider
-    val credentialProvider: PackageCredentialProvider
+    val credentialProvider: PackageRepositoryCredentialProvider
 
     companion object {
         /**
@@ -22,7 +22,7 @@ interface PackageRepository {
          * @param uriProvider Resolves the repository endpoint URL.
          * @param credentialProvider Supplies repository credentials.
          */
-        operator fun invoke(uriProvider: PackageRepositoryUriProvider, credentialProvider: PackageCredentialProvider): PackageRepository {
+        operator fun invoke(uriProvider: PackageRepositoryUriProvider, credentialProvider: PackageRepositoryCredentialProvider): PackageRepository {
             return DefaultPackageRepository(uriProvider, credentialProvider)
         }
 
@@ -32,7 +32,7 @@ interface PackageRepository {
          * @param uri The repository endpoint URL as a string.
          * @param credentialProvider Supplies repository credentials.
          */
-        fun create(uri: String, credentialProvider: PackageCredentialProvider): DefaultPackageRepository {
+        fun create(uri: String, credentialProvider: PackageRepositoryCredentialProvider): DefaultPackageRepository {
             return create(URI(uri), credentialProvider)
         }
 
@@ -42,7 +42,7 @@ interface PackageRepository {
          * @param uri The repository endpoint URL.
          * @param credentialProvider Supplies repository credentials.
          */
-        fun create(uri: URI, credentialProvider: PackageCredentialProvider): DefaultPackageRepository {
+        fun create(uri: URI, credentialProvider: PackageRepositoryCredentialProvider): DefaultPackageRepository {
             return DefaultPackageRepository(
                 uriProvider = StaticUriProvider(uri),
                 credentialProvider = credentialProvider

@@ -39,7 +39,7 @@ repositories {
         codeArtifactRepository(
             domain = "my-domain",
             repository = "my-repo",
-            domainOwner = 123456789012L,   // optional: AWS account ID
+            domainOwner = "123456789012",   // optional: AWS account ID
             ssoProfile = "my-sso-profile", // optional: named AWS SSO profile
         )
 

@@ -20,7 +20,7 @@ fun gradlePropertiesProvider(
 }
 
 /**
- * An implementation of [PackageCredentialProvider] that returns [package-repository credentials][com.moneyforward.gradle.PackageRepositoryCredentials]
+ * An implementation of [PackageRepositoryCredentialProvider] that returns [package-repository credentials][com.moneyforward.gradle.PackageRepositoryCredentials]
  * based on the gradle project settings (usually configured via various gradle.properties)
  *
  * @param usernameProperty the property to use for resolving the package repository username used in the credentials
@@ -29,7 +29,7 @@ fun gradlePropertiesProvider(
 open class PropertyPackageCredentialProvider internal constructor(
     private val usernameProperty: String,
     private val tokenProperty: String
-) : PackageCredentialProvider {
+) : PackageRepositoryCredentialProvider {
     companion object {
         internal val propertyProviders = mutableMapOf<Pair<String, String>, PropertyPackageCredentialProvider>()
     }

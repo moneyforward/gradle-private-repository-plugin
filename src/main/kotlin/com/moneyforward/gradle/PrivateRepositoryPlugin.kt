@@ -1,5 +1,6 @@
 package com.moneyforward.gradle
 
+import com.moneyforward.gradle.provider.PackageRepositoryCredentialProvider
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
@@ -73,15 +74,23 @@ class PrivateRepositoryPlugin : Plugin<Any> {
     ) {
         var emptyUsername = false
         configuration.repositories.forEach { repository ->
-            val uri = repository.uriProvider.getUri(propertyDelegate)
+            val uriProvider = repository.uriProvider
+            val credentialsProvider = repository.credentialProvider
 
-            logger?.debug("Getting credentials for repository {}, provider = {}", uri, repository.credentialProvider::class.simpleName)
-            val repositoryCredentials = repository.credentialProvider.getCredentials(propertyDelegate)
+            logger?.debug("Getting uri for repository, provider = {}", uriProvider::class.simpleName)
+            val uri = uriProvider.getUri(propertyDelegate)
+
+            logger?.debug("Getting credentials for repository {}, provider = {}", uri, credentialsProvider::class.simpleName)
+            val repositoryCredentials = credentialsProvider.getCredentials(propertyDelegate)
+            if (repositoryCredentials == null && credentialsProvider !is PackageRepositoryCredentialProvider.NoOp) {
+                logger?.error("Credentials could not be resolved from credential provider: ${credentialsProvider::class.simpleName}")
+            }
 
             maven { maven ->
                 maven.url = uri
+
                 if (repositoryCredentials != null) {
-                    emptyUsername = emptyUsername || repositoryCredentials.username.isBlank()
+                    emptyUsername = emptyUsername || repositoryCredentials.username.isNullOrBlank()
                     maven.credentials { credentials ->
                         credentials.username = repositoryCredentials.username
                         credentials.password = repositoryCredentials.token

@@ -1,10 +1,6 @@
 package com.moneyforward.gradle.codeartifact
 
 import com.moneyforward.gradle.PrivateRepositoryConfiguration
-import com.moneyforward.gradle.provider.EnvironmentVariableCredentialProvider
-import com.moneyforward.gradle.provider.providersOf
-
-internal const val DEFAULT_USERNAME = "CodeArtifact"
 
 /**
  * Creates a [CodeArtifactRepository] from individual parameters.
@@ -19,10 +15,10 @@ internal const val DEFAULT_USERNAME = "CodeArtifact"
 fun codeArtifact(
     domain: String,
     repository: String,
-    domainOwner: Long? = null,
+    domainOwner: String? = null,
     region: String? = null,
     ssoProfile: String? = null,
-    username: String = DEFAULT_USERNAME,
+    username: String? = null,
 ) = codeArtifact(
     CodeArtifactDetails(
         domain = domain,
@@ -43,18 +39,11 @@ fun codeArtifact(
  */
 fun codeArtifact(
     details: CodeArtifactDetails,
-    username: String = DEFAULT_USERNAME,
-): CodeArtifactRepository {
-    val uriProvider = CodeArtifactUriProvider(details)
-
-    val credentialsProvider = providersOf(
-        CodeArtifactCredentialProvider(details, username),
-        EnvironmentVariableCredentialProvider()
-    )
-
-    return CodeArtifactRepository(
-        uriProvider = uriProvider,
-        credentialProvider = credentialsProvider,
+    username: String? = null,
+): CodeArtifactRepository.Default {
+    return CodeArtifactRepository.Default(
+        details = details,
+        username = username,
     )
 }
 
@@ -71,10 +60,10 @@ fun codeArtifact(
 fun PrivateRepositoryConfiguration.codeArtifactRepository(
     domain: String,
     repository: String,
-    domainOwner: Long? = null,
+    domainOwner: String? = null,
     region: String? = null,
     ssoProfile: String? = null,
-    username: String = DEFAULT_USERNAME,
+    username: String? = null,
     configure: CodeArtifactRepository.() -> Unit = {}
 ) {
     repository(

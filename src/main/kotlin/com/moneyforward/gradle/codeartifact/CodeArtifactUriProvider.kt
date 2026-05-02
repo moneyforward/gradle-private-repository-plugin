@@ -15,7 +15,6 @@ import java.net.URI
 class CodeArtifactUriProvider(
     val details: CodeArtifactDetails,
 ) : PackageRepositoryUriProvider {
-
     /**
      * Fetches the repository endpoint from the CodeArtifact API and returns it as a [URI].
      *
@@ -26,7 +25,7 @@ class CodeArtifactUriProvider(
         val endpoint = runBlocking {
             CodeArtifactClient.get(details).getRepositoryEndpoint {
                 domain = details.domain
-                domainOwner = details.domainOwner?.toString()
+                domainOwner = details.domainOwner
                 repository = details.repository
                 format = PackageFormat.Maven
             }
