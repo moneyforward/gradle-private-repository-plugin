@@ -4,7 +4,7 @@ The `private-repository-plugin` is a Gradle plugin for making dependencies on pr
 ## Installation
 ```kotlin
 plugins {
-    id("com.moneyforward.private-repository-plugin") version "0.4.0"
+    id("com.moneyforward.private-repository-plugin") version "0.5.0"
 }
 ```
 
@@ -52,14 +52,17 @@ repositories {
 }
 ```
 
-The plugin can also be applied in `settings.gradle.kts` to add resolution for plugins used inside build files:
+The plugin can also be applied in `settings.gradle.kts` to add resolution for plugins used inside
+build files (`privatePlugins`) and for project dependencies including version catalogs
+(`privateDependencies`):
 
 ```kotlin
 // settings.gradle.kts
 plugins {
-    id("com.moneyforward.private-repository-plugin") version "0.4.0"
+    id("com.moneyforward.private-repository-plugin") version "0.5.0"
 }
 
+// Repositories used to resolve Gradle plugins (pluginManagement.repositories)
 privatePlugins {
     repository(gpr("OWNER", "REPO"))
 
@@ -68,7 +71,26 @@ privatePlugins {
         repository = "my-repo",
     )
 }
+
+// Repositories used to resolve project dependencies and version catalogs
+// (dependencyResolutionManagement.repositories)
+privateDependencies {
+    codeArtifactRepository(
+        domain = "my-domain",
+        repository = "my-repo",
+    )
+}
+
+dependencyResolutionManagement {
+    repositories { mavenCentral() }
+    versionCatalogs {
+        create("mflibs") { from("com.moneyforward.gradle:catalog:2.7.2") }
+    }
+}
 ```
+
+`privatePlugins` and `privateDependencies` are independent — if the same repository is needed for
+both, declare it in both blocks (or extract a shared configuration lambda on the call site).
 
 #### GitHub Packages default credentials
 
