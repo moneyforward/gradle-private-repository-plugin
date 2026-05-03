@@ -24,6 +24,15 @@ fun Settings.privatePlugins(configure: PrivateRepositoryConfiguration.() -> Unit
 }
 
 /**
+ * Configures private repositories for `dependencyResolutionManagement.repositories` from
+ * `settings.gradle(.kts)`. Mirrors [privatePlugins] but targets dependency resolution rather than
+ * plugin resolution.
+ */
+fun Settings.privateDependencies(configure: PrivateRepositoryConfiguration.() -> Unit) {
+    configure(PrivateRepositoryPlugin.SETTINGS_DEPENDENCY_DATA)
+}
+
+/**
  * The main plugin class for `com.moneyforward.private-repository-plugin`
  * This class automatically configures gradle repositories to include dependencies to private
  * packages.
@@ -32,6 +41,7 @@ class PrivateRepositoryPlugin : Plugin<Any> {
     companion object {
         internal val PROJECT_PLUGIN_DATA = ProjectPrivateRepositoryConfiguration()
         internal val SETTINGS_PLUGIN_DATA = PrivateRepositoryConfiguration()
+        internal val SETTINGS_DEPENDENCY_DATA = PrivateRepositoryConfiguration()
         internal const val USERNAME_PROPERTY = "private-repository.github.username"
         internal const val TOKEN_PROPERTY = "private-repository.github.token"
     }
@@ -65,7 +75,14 @@ class PrivateRepositoryPlugin : Plugin<Any> {
     }
 
     private fun apply(settings: Settings) {
-        settings.pluginManagement.repositories.apply(SettingsPropertyDelegate(settings), SETTINGS_PLUGIN_DATA)
+        // Defer registration until settings.gradle(.kts) finishes evaluating so that
+        // privatePlugins { ... } / privateDependencies { ... } blocks (which run after
+        // the plugin is applied) have populated SETTINGS_*_DATA.
+        settings.gradle.settingsEvaluated {
+            val delegate = SettingsPropertyDelegate(settings)
+            settings.pluginManagement.repositories.apply(delegate, SETTINGS_PLUGIN_DATA)
+            settings.dependencyResolutionManagement.repositories.apply(delegate, SETTINGS_DEPENDENCY_DATA)
+        }
     }
 
     private fun RepositoryHandler.apply(
@@ -103,7 +120,7 @@ class PrivateRepositoryPlugin : Plugin<Any> {
             logger?.warn("Detected usage of unset or empty package username for at least one repository. This may" +
                     " result in an authorization issue depending on the token used.")
         }
-        logger?.info("Configured ${PROJECT_PLUGIN_DATA.repositories.size} private repositories")
+        logger?.info("Configured ${configuration.repositories.size} private repositories")
     }
 
 
