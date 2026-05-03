@@ -29,7 +29,7 @@ open class PrivateRepositoryConfiguration {
     fun repository(
         url: URI,
         credentialProvider: PackageRepositoryCredentialProvider = gradlePropertiesProvider(),
-        configure: PackageRepository.() -> Unit = {}
+        configure: PackageRepository.() -> Unit = {},
     ) {
         repository(PackageRepository.create(url, credentialProvider), configure)
     }
@@ -44,11 +44,13 @@ open class PrivateRepositoryConfiguration {
     fun repository(
         url: String,
         credentialProvider: PackageRepositoryCredentialProvider = gradlePropertiesProvider(),
-        configure: PackageRepository.() -> Unit = {}
+        configure: PackageRepository.() -> Unit = {},
     ) = repository(URI(url), credentialProvider, configure)
 
-    fun <T : PackageRepository> repository(repository: T, configure: T.() -> Unit = {}) {
+    fun <T : PackageRepository> repository(
+        repository: T,
+        configure: T.() -> Unit = {},
+    ) {
         mutableRepositories.add(repository.apply(configure))
     }
 }
-

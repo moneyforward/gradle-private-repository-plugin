@@ -8,5 +8,5 @@ data class StoreRepositoryCredentialsEntry(
     var usernameProperty: String = PrivateRepositoryPlugin.USERNAME_PROPERTY,
     var tokenProperty: String = PrivateRepositoryPlugin.TOKEN_PROPERTY,
     var username: String? = null,
-    var token: String? = null
+    var token: String? = null,
 )

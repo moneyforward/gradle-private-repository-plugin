@@ -36,7 +36,7 @@ class CodeArtifactCredentialProvider(
 
         return PackageRepositoryCredentials(
             username = username ?: DEFAULT_USERNAME,
-            token = token
+            token = token,
         )
     }
 }

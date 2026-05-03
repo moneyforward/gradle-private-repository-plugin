@@ -1,18 +1,19 @@
 package com.moneyforward.gradle.provider
 
 import com.moneyforward.gradle.PropertyDelegate
+import com.moneyforward.gradle.exception.ChainException
 import java.net.URI
 
 /**
  * A [PackageRepositoryUriProvider] that tries each delegate in order, returning the first
  * successful result.
  *
- * If every provider throws, a [ChainException] is raised that aggregates all failures.
+ * If every provider throws, a [com.moneyforward.gradle.exception.ChainException] is raised that aggregates all failures.
  *
  * @param providers The URI providers to try, in priority order.
  */
 class UriProviderChain(
-    val providers: List<PackageRepositoryUriProvider>
+    val providers: List<PackageRepositoryUriProvider>,
 ) : PackageRepositoryUriProvider {
     private val failures = mutableListOf<Exception>()
 
@@ -39,9 +40,6 @@ class UriProviderChain(
  * @param providers The credential providers to chain, in priority order.
  * @return A [UriProviderChain] wrapping the given providers.
  */
-fun providersOf(
-    vararg providers: PackageRepositoryUriProvider,
-): UriProviderChain {
+fun providersOf(vararg providers: PackageRepositoryUriProvider): UriProviderChain {
     return UriProviderChain(providers.toList())
 }
-

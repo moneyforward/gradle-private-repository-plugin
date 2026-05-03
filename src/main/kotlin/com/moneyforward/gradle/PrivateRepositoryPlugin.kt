@@ -45,6 +45,7 @@ class PrivateRepositoryPlugin : Plugin<Any> {
         internal const val USERNAME_PROPERTY = "private-repository.github.username"
         internal const val TOKEN_PROPERTY = "private-repository.github.token"
     }
+
     private var logger: Logger? = null
 
     override fun apply(target: Any) {
@@ -66,10 +67,12 @@ class PrivateRepositoryPlugin : Plugin<Any> {
             // do not apply repository settings if running the storeGitHubCredentials task
             if (tasks.none { task -> task == StoreRepositoryCredentialsTask.NAME }) {
                 project.repositories.apply(ProjectPropertyDelegate(project), PROJECT_PLUGIN_DATA)
-            }
-            else if (tasks.size > 1) {
-                logger.warn("{} should be ran in isolation, running it with other " +
-                        "tasks may cause unexpected issues.", StoreRepositoryCredentialsTask.NAME)
+            } else if (tasks.size > 1) {
+                logger.warn(
+                    "{} should be ran in isolation, running it with other " +
+                        "tasks may cause unexpected issues.",
+                    StoreRepositoryCredentialsTask.NAME,
+                )
             }
         }
     }
@@ -87,7 +90,7 @@ class PrivateRepositoryPlugin : Plugin<Any> {
 
     private fun RepositoryHandler.apply(
         propertyDelegate: PropertyDelegate,
-        configuration: PrivateRepositoryConfiguration
+        configuration: PrivateRepositoryConfiguration,
     ) {
         var emptyUsername = false
         configuration.repositories.forEach { repository ->
@@ -117,29 +120,36 @@ class PrivateRepositoryPlugin : Plugin<Any> {
             logger?.debug("Registered new maven dependency: {}", repository.uriProvider)
         }
         if (emptyUsername) {
-            logger?.warn("Detected usage of unset or empty package username for at least one repository. This may" +
-                    " result in an authorization issue depending on the token used.")
+            logger?.warn(
+                "Detected usage of unset or empty package username for at least one repository. This may" +
+                    " result in an authorization issue depending on the token used.",
+            )
         }
         logger?.info("Configured ${configuration.repositories.size} private repositories")
     }
 
-
-    private class ProjectPropertyDelegate(private val project: Project) : PropertyDelegate {
+    private class ProjectPropertyDelegate(
+        private val project: Project,
+    ) : PropertyDelegate {
         override fun resolve(name: String): Any? {
             return project.findProperty(name)
         }
     }
 
-    private class SettingsPropertyDelegate(settings: Settings) : PropertyDelegate {
+    private class SettingsPropertyDelegate(
+        settings: Settings,
+    ) : PropertyDelegate {
         private val providers = settings.providers
+
         override fun resolve(name: String): Any? {
-            return providers.gradleProperty(name)
+            return providers
+                .gradleProperty(name)
                 .orElse { providers.systemProperty(name) }
                 .orElse { providers.environmentVariable(name) }
                 .orNull
         }
 
-        private fun <T> Provider<T>.orElse(`else`: () -> Provider<T>) : Provider<T> {
+        private fun <T> Provider<T>.orElse(`else`: () -> Provider<T>): Provider<T> {
             if (isPresent) return this
             return orElse(`else`)
         }

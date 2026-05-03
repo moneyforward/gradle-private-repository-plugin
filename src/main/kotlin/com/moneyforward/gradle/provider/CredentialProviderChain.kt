@@ -2,6 +2,7 @@ package com.moneyforward.gradle.provider
 
 import com.moneyforward.gradle.PackageRepositoryCredentials
 import com.moneyforward.gradle.PropertyDelegate
+import com.moneyforward.gradle.exception.ChainException
 
 /**
  * A [PackageRepositoryCredentialProvider] that tries each provider in order, returning the first non-null result.
@@ -12,7 +13,7 @@ import com.moneyforward.gradle.PropertyDelegate
  * @param providers The ordered list of credential providers to try.
  */
 open class CredentialProviderChain(
-    private val providers: List<PackageRepositoryCredentialProvider>
+    private val providers: List<PackageRepositoryCredentialProvider>,
 ) : PackageRepositoryCredentialProvider {
     private val failures = mutableListOf<Exception>()
 
@@ -39,8 +40,6 @@ open class CredentialProviderChain(
  * @param providers The credential providers to chain, in priority order.
  * @return A [CredentialProviderChain] wrapping the given providers.
  */
-fun providersOf(
-    vararg providers: PackageRepositoryCredentialProvider,
-): CredentialProviderChain {
+fun providersOf(vararg providers: PackageRepositoryCredentialProvider): CredentialProviderChain {
     return CredentialProviderChain(providers.toList())
 }

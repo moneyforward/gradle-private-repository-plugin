@@ -64,7 +64,7 @@ fun PrivateRepositoryConfiguration.codeArtifactRepository(
     region: String? = null,
     ssoProfile: String? = null,
     username: String? = null,
-    configure: CodeArtifactRepository.() -> Unit = {}
+    configure: CodeArtifactRepository.() -> Unit = {},
 ) {
     repository(
         repository = codeArtifact(
@@ -75,7 +75,7 @@ fun PrivateRepositoryConfiguration.codeArtifactRepository(
             region = region,
             ssoProfile = ssoProfile,
         ),
-        configure = configure
+        configure = configure,
     )
 }
 
@@ -97,13 +97,13 @@ fun PrivateRepositoryConfiguration.codeArtifactRepository(config: CodeArtifactDe
  */
 fun PrivateRepositoryConfiguration.codeArtifactRepository(
     details: CodeArtifactDetails.() -> Unit,
-    configure: CodeArtifactRepository.() -> Unit
+    configure: CodeArtifactRepository.() -> Unit,
 ) {
     val details = CodeArtifactDetails().apply(details)
     repository(
         repository = codeArtifact(
             details = details,
         ),
-        configure = configure
+        configure = configure,
     )
 }

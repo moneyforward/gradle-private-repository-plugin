@@ -22,7 +22,10 @@ interface PackageRepository {
          * @param uriProvider Resolves the repository endpoint URL.
          * @param credentialProvider Supplies repository credentials.
          */
-        operator fun invoke(uriProvider: PackageRepositoryUriProvider, credentialProvider: PackageRepositoryCredentialProvider): PackageRepository {
+        operator fun invoke(
+            uriProvider: PackageRepositoryUriProvider,
+            credentialProvider: PackageRepositoryCredentialProvider,
+        ): PackageRepository {
             return DefaultPackageRepository(uriProvider, credentialProvider)
         }
 
@@ -32,7 +35,10 @@ interface PackageRepository {
          * @param uri The repository endpoint URL as a string.
          * @param credentialProvider Supplies repository credentials.
          */
-        fun create(uri: String, credentialProvider: PackageRepositoryCredentialProvider): DefaultPackageRepository {
+        fun create(
+            uri: String,
+            credentialProvider: PackageRepositoryCredentialProvider,
+        ): DefaultPackageRepository {
             return create(URI(uri), credentialProvider)
         }
 
@@ -42,10 +48,13 @@ interface PackageRepository {
          * @param uri The repository endpoint URL.
          * @param credentialProvider Supplies repository credentials.
          */
-        fun create(uri: URI, credentialProvider: PackageRepositoryCredentialProvider): DefaultPackageRepository {
+        fun create(
+            uri: URI,
+            credentialProvider: PackageRepositoryCredentialProvider,
+        ): DefaultPackageRepository {
             return DefaultPackageRepository(
                 uriProvider = StaticUriProvider(uri),
-                credentialProvider = credentialProvider
+                credentialProvider = credentialProvider,
             )
         }
     }

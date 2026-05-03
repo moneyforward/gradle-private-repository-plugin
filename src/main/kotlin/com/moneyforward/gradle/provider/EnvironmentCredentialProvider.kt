@@ -2,6 +2,7 @@ package com.moneyforward.gradle.provider
 
 import com.moneyforward.gradle.PackageRepositoryCredentials
 import com.moneyforward.gradle.PropertyDelegate
+import com.moneyforward.gradle.exception.EnvironmentException
 
 /**
  * A [PackageRepositoryCredentialProvider] that reads credentials from environment variables.
@@ -16,11 +17,13 @@ class EnvironmentCredentialProvider(
 ) : PackageRepositoryCredentialProvider {
     override fun getCredentials(propertyDelegate: PropertyDelegate): PackageRepositoryCredentials {
         val token = System.getenv(tokenEnvironmentVar)
-            ?: throw NullPointerException("Could not resolve token environment variable")
+            ?: throw EnvironmentException(
+                "Environment variable '$tokenEnvironmentVar' was not set. Please check your environment.",
+            )
 
         return PackageRepositoryCredentials(
             username = System.getenv(usernameEnvironmentVar),
-            token = token
+            token = token,
         )
     }
 }

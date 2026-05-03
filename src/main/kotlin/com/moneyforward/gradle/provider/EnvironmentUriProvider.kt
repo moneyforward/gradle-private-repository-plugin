@@ -1,7 +1,7 @@
 package com.moneyforward.gradle.provider
 
 import com.moneyforward.gradle.PropertyDelegate
-import org.gradle.api.logging.Logging
+import com.moneyforward.gradle.exception.EnvironmentException
 import java.net.URI
 import java.net.URISyntaxException
 
@@ -16,14 +16,19 @@ import java.net.URISyntaxException
 class EnvironmentUriProvider(
     var uriEnvironmentVar: String = "GRADLE_PRIVATE_REPO_URL",
 ) : PackageRepositoryUriProvider {
-    private val logger = Logging.getLogger(this::class.simpleName!!)
-
     override fun getUri(propertyDelegate: PropertyDelegate): URI {
         return try {
             URI(System.getenv(uriEnvironmentVar)!!)
         } catch (e: URISyntaxException) {
-            logger.error("Failed to resolve `${uriEnvironmentVar}` as a valid URI. Please check your environment.")
-            throw e
+            throw EnvironmentException(
+                "Failed to resolve '$uriEnvironmentVar' as a valid URI. Please check your environment.",
+                e,
+            )
+        } catch (e: NullPointerException) {
+            throw EnvironmentException(
+                "Environment variable '$uriEnvironmentVar' was not set. Please check your environment.",
+                e,
+            )
         }
     }
 }

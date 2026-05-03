@@ -32,22 +32,32 @@ abstract class StoreRepositoryCredentialsTask : DefaultTask() {
      * @param propertyPrefix (optional) property prefix to be used for the `username` and `token` property
      * @see [withDefaultEntry]
      */
-    fun addEntry(propertyPrefix: String? = null, entry: StoreRepositoryCredentialsEntry.() -> Unit = {}) {
+    fun addEntry(
+        propertyPrefix: String? = null,
+        entry: StoreRepositoryCredentialsEntry.() -> Unit = {},
+    ) {
         val credentialsEntry = StoreRepositoryCredentialsEntry()
-        credentialEntries.add(credentialsEntry.copy(
-            usernameProperty = propertyPrefix?.let { "$propertyPrefix.username" } ?: credentialsEntry.usernameProperty,
-            tokenProperty = propertyPrefix?.let { "$propertyPrefix.token" } ?: credentialsEntry.tokenProperty
-        ).apply(entry))
+        credentialEntries.add(
+            credentialsEntry
+                .copy(
+                    usernameProperty = propertyPrefix?.let { "$propertyPrefix.username" } ?: credentialsEntry.usernameProperty,
+                    tokenProperty = propertyPrefix?.let { "$propertyPrefix.token" } ?: credentialsEntry.tokenProperty,
+                ).apply(entry),
+        )
     }
 
     /**
-     * Creates or modifies the local gradle.properties file to include GitHub credentials as properties
+     * Creates or modifies the local gradle.properties file to include repository credentials as properties
      * to be used for dependency resolution
      */
     @TaskAction
     internal fun storeRepositoryCredentials() {
-        val outputDirectory = outputDirectory.orNull?.asFile?.absolutePath?.let { Path.of(it) } ?: Paths.get(
-            System.getenv("HOME") ?: "", "/.gradle/"
+        val outputDirectory = outputDirectory.orNull
+            ?.asFile
+            ?.absolutePath
+            ?.let { Path.of(it) } ?: Paths.get(
+            System.getenv("HOME") ?: "",
+            "/.gradle/",
         )
 
         val credentialsFile = outputDirectory.resolve("gradle.properties").toFile()
@@ -63,7 +73,10 @@ abstract class StoreRepositoryCredentialsTask : DefaultTask() {
         }
     }
 
-    private fun processCredentialsFileChanges(credentialsFile: File, entry: StoreRepositoryCredentialsEntry): String? {
+    private fun processCredentialsFileChanges(
+        credentialsFile: File,
+        entry: StoreRepositoryCredentialsEntry,
+    ): String? {
         val checkFlags = checkCredentialsFile(credentialsFile, entry)
         if (checkFlags == NONE) return null
         logger.debug("Entry ({}, {}), flag value = {}", entry.usernameProperty, entry.tokenProperty, checkFlags)
@@ -88,8 +101,10 @@ abstract class StoreRepositoryCredentialsTask : DefaultTask() {
         }
         if ((checkFlags and TOKEN_FLAG) > 0) {
             if (token.isNullOrEmpty()) {
-                throw NullPointerException("GitHub token cannot be null or empty. " +
-                        "Please check your environment variables or configure the task to use the correct username!")
+                throw NullPointerException(
+                    "Repository token cannot be null or empty. " +
+                        "Please check your environment variables or configure the task to use the correct username!",
+                )
             }
             newLines.add("${entry.tokenProperty}=$token")
         }
@@ -97,7 +112,10 @@ abstract class StoreRepositoryCredentialsTask : DefaultTask() {
         return newLines.joinToString(separator = "\n")
     }
 
-    private fun checkCredentialsFile(file: File, entry: StoreRepositoryCredentialsEntry): Int {
+    private fun checkCredentialsFile(
+        file: File,
+        entry: StoreRepositoryCredentialsEntry,
+    ): Int {
         if (!file.exists()) return ALL_FLAGS
         val contents = file.readText()
         var properties = NONE
@@ -110,19 +128,22 @@ abstract class StoreRepositoryCredentialsTask : DefaultTask() {
         return properties
     }
 
-    private fun legacyWarning(legacyVariable: String, newVariable: String) {
+    private fun legacyWarning(
+        legacyVariable: String,
+        newVariable: String,
+    ) {
         logger.warn(
             "Detected legacy environment variable $legacyVariable. " +
-                    "Please migrate to $newVariable. " +
-                    "Support for the legacy variable will be removed in a future release."
+                "Please migrate to $newVariable. " +
+                "Support for the legacy variable will be removed in a future release.",
         )
     }
 
     companion object {
-        private const val NONE          = 0
+        private const val NONE = 0
         private const val USERNAME_FLAG = 1
-        private const val TOKEN_FLAG    = 2
-        private const val ALL_FLAGS     = 3
+        private const val TOKEN_FLAG = 2
+        private const val ALL_FLAGS = 3
         internal const val NAME = "storeRepositoryCredentials"
 
         const val LEGACY_USERNAME_ENV_VARIABLE = "GRADLE_GITHUB_USERNAME"
