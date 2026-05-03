@@ -48,7 +48,7 @@ open class PropertyPackageCredentialProvider internal constructor(
             }
 
             throw NullPointerException(
-                "Could not find package repositroy credentials. If building locally please configure " +
+                "Could not find package repository credentials. If building locally please configure " +
                     "and run the `storeRepositoryCredentials` task or check the following properties:" +
                     "\n\t- $usernameProperty\n\t- $tokenProperty",
             )

@@ -14,8 +14,12 @@ import java.net.URISyntaxException
  * @throws NullPointerException if the environment variable is not set.
  */
 class EnvironmentUriProvider(
-    var uriEnvironmentVar: String = "GRADLE_PRIVATE_REPO_URL",
+    var uriEnvironmentVar: String = DEFAULT_VAR,
 ) : PackageRepositoryUriProvider {
+    companion object {
+        const val DEFAULT_VAR = "GRADLE_PRIVATE_REPO_URL"
+    }
+
     override fun getUri(propertyDelegate: PropertyDelegate): URI {
         return try {
             URI(System.getenv(uriEnvironmentVar)!!)

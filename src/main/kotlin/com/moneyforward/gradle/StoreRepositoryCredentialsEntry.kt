@@ -7,6 +7,8 @@ package com.moneyforward.gradle
 data class StoreRepositoryCredentialsEntry(
     var usernameProperty: String = PrivateRepositoryPlugin.USERNAME_PROPERTY,
     var tokenProperty: String = PrivateRepositoryPlugin.TOKEN_PROPERTY,
+    var urlProperty: String = PrivateRepositoryPlugin.URL_PROPERTY,
     var username: String? = null,
     var token: String? = null,
+    var url: String? = null,
 )
