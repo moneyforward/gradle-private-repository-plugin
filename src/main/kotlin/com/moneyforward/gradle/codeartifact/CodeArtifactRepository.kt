@@ -5,6 +5,8 @@ import com.moneyforward.gradle.provider.EnvironmentCredentialProvider
 import com.moneyforward.gradle.provider.EnvironmentUriProvider
 import com.moneyforward.gradle.provider.PackageRepositoryCredentialProvider
 import com.moneyforward.gradle.provider.PackageRepositoryUriProvider
+import com.moneyforward.gradle.provider.gradlePropertiesProvider
+import com.moneyforward.gradle.provider.gradlePropertiesUriProvider
 import com.moneyforward.gradle.provider.providersOf
 
 /**
@@ -37,10 +39,12 @@ open class CodeArtifactRepository : PackageRepository {
         override var uriProvider: PackageRepositoryUriProvider = providersOf(
             CodeArtifactUriProvider(details),
             uriEnvProvider,
+            gradlePropertiesUriProvider(),
         )
         override var credentialProvider: PackageRepositoryCredentialProvider = providersOf(
             CodeArtifactCredentialProvider(details, username),
             credentialEnvProvider,
+            gradlePropertiesProvider(),
         )
 
         var uriEnvironmentVar: String

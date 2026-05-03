@@ -1,5 +1,8 @@
 package com.moneyforward.gradle
 
+import com.moneyforward.gradle.provider.EnvironmentCredentialProvider.Companion.DEFAULT_TOKEN_VAR
+import com.moneyforward.gradle.provider.EnvironmentCredentialProvider.Companion.DEFAULT_USERNAME_VAR
+import com.moneyforward.gradle.provider.EnvironmentUriProvider
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.tasks.InputDirectory
@@ -42,6 +45,7 @@ abstract class StoreRepositoryCredentialsTask : DefaultTask() {
                 .copy(
                     usernameProperty = propertyPrefix?.let { "$propertyPrefix.username" } ?: credentialsEntry.usernameProperty,
                     tokenProperty = propertyPrefix?.let { "$propertyPrefix.token" } ?: credentialsEntry.tokenProperty,
+                    urlProperty = propertyPrefix?.let { "$propertyPrefix.url" } ?: credentialsEntry.urlProperty,
                 ).apply(entry),
         )
     }
@@ -79,19 +83,20 @@ abstract class StoreRepositoryCredentialsTask : DefaultTask() {
     ): String? {
         val checkFlags = checkCredentialsFile(credentialsFile, entry)
         if (checkFlags == NONE) return null
-        logger.debug("Entry ({}, {}), flag value = {}", entry.usernameProperty, entry.tokenProperty, checkFlags)
+        logger.debug("Entry ({}, {}, {}), flag value = {}", entry.usernameProperty, entry.tokenProperty, entry.urlProperty, checkFlags)
 
-        var username: String? = entry.username ?: System.getenv(USERNAME_ENV_VARIABLE)
-        var token: String? = entry.token ?: System.getenv(TOKEN_ENV_VARIABLE)
+        var username: String? = entry.username ?: System.getenv(DEFAULT_USERNAME_VAR)
+        var token: String? = entry.token ?: System.getenv(DEFAULT_TOKEN_VAR)
+        val url: String? = entry.url ?: System.getenv(EnvironmentUriProvider.DEFAULT_VAR)
 
         if (username == null) {
             username = System.getenv(LEGACY_USERNAME_ENV_VARIABLE)
-            if (username != null) legacyWarning(LEGACY_USERNAME_ENV_VARIABLE, USERNAME_ENV_VARIABLE)
+            if (username != null) legacyWarning(LEGACY_USERNAME_ENV_VARIABLE, DEFAULT_USERNAME_VAR)
         }
 
         if (token == null) {
             token = System.getenv(LEGACY_TOKEN_ENV_VARIABLE)
-            if (token != null) legacyWarning(LEGACY_TOKEN_ENV_VARIABLE, TOKEN_ENV_VARIABLE)
+            if (token != null) legacyWarning(LEGACY_TOKEN_ENV_VARIABLE, DEFAULT_TOKEN_VAR)
         }
 
         val newLines = mutableListOf<String>()
@@ -99,6 +104,11 @@ abstract class StoreRepositoryCredentialsTask : DefaultTask() {
         if ((checkFlags and USERNAME_FLAG) > 0 && username != null) {
             newLines.add("${entry.usernameProperty}=$username")
         }
+
+        if ((checkFlags and URL_FLAG) > 0) {
+            newLines.add("${entry.urlProperty}=$url")
+        }
+
         if ((checkFlags and TOKEN_FLAG) > 0) {
             if (token.isNullOrEmpty()) {
                 throw NullPointerException(
@@ -125,6 +135,9 @@ abstract class StoreRepositoryCredentialsTask : DefaultTask() {
         if (!contents.contains(entry.tokenProperty)) {
             properties = properties or TOKEN_FLAG
         }
+        if (!contents.contains(entry.urlProperty)) {
+            properties = properties or URL_FLAG
+        }
         return properties
     }
 
@@ -143,13 +156,11 @@ abstract class StoreRepositoryCredentialsTask : DefaultTask() {
         private const val NONE = 0
         private const val USERNAME_FLAG = 1
         private const val TOKEN_FLAG = 2
-        private const val ALL_FLAGS = 3
+        private const val URL_FLAG = 4
+        private const val ALL_FLAGS = 7
         internal const val NAME = "storeRepositoryCredentials"
 
         const val LEGACY_USERNAME_ENV_VARIABLE = "GRADLE_GITHUB_USERNAME"
         const val LEGACY_TOKEN_ENV_VARIABLE = "GRADLE_GITHUB_USERNAME"
-
-        const val USERNAME_ENV_VARIABLE = "GRADLE_PRIVATE_REPO_USERNAME"
-        const val TOKEN_ENV_VARIABLE = "GRADLE_PRIVATE_REPO_TOKEN"
     }
 }

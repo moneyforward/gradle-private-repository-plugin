@@ -12,9 +12,14 @@ import com.moneyforward.gradle.exception.EnvironmentException
  * @throws NullPointerException if the token environment variable is not set.
  */
 class EnvironmentCredentialProvider(
-    var usernameEnvironmentVar: String = "GRADLE_PRIVATE_REPO_USERNAME",
-    var tokenEnvironmentVar: String = "GRADLE_PRIVATE_REPO_TOKEN",
+    var usernameEnvironmentVar: String = DEFAULT_USERNAME_VAR,
+    var tokenEnvironmentVar: String = DEFAULT_TOKEN_VAR,
 ) : PackageRepositoryCredentialProvider {
+    companion object {
+        const val DEFAULT_USERNAME_VAR = "GRADLE_PRIVATE_REPO_USERNAME"
+        const val DEFAULT_TOKEN_VAR = "GRADLE_PRIVATE_REPO_TOKEN"
+    }
+
     override fun getCredentials(propertyDelegate: PropertyDelegate): PackageRepositoryCredentials {
         val token = System.getenv(tokenEnvironmentVar)
             ?: throw EnvironmentException(

@@ -4,7 +4,7 @@ The `private-repository-plugin` is a Gradle plugin for making dependencies on pr
 ## Installation
 ```kotlin
 plugins {
-    id("com.moneyforward.private-repository-plugin") version "0.5.0"
+    id("com.moneyforward.private-repository-plugin") version "0.5.2"
 }
 ```
 
@@ -63,7 +63,7 @@ import com.moneyforward.gradle.privatePlugins
 import com.moneyforward.gradle.privateDependencies
 
 plugins {
-    id("com.moneyforward.private-repository-plugin") version "0.5.0"
+    id("com.moneyforward.private-repository-plugin") version "0.5.2"
 }
 
 // Repositories used to resolve Gradle plugins (pluginManagement.repositories)

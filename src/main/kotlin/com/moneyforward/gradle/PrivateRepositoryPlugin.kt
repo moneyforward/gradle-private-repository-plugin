@@ -42,8 +42,9 @@ class PrivateRepositoryPlugin : Plugin<Any> {
         internal val PROJECT_PLUGIN_DATA = ProjectPrivateRepositoryConfiguration()
         internal val SETTINGS_PLUGIN_DATA = PrivateRepositoryConfiguration()
         internal val SETTINGS_DEPENDENCY_DATA = PrivateRepositoryConfiguration()
-        internal const val USERNAME_PROPERTY = "private-repository.github.username"
-        internal const val TOKEN_PROPERTY = "private-repository.github.token"
+        internal const val USERNAME_PROPERTY = "private-repository.general.username"
+        internal const val TOKEN_PROPERTY = "private-repository.general.token"
+        internal const val URL_PROPERTY = "private-repository.general.url"
     }
 
     private var logger: Logger? = null
