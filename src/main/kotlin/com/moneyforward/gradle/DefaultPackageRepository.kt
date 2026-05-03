@@ -4,9 +4,9 @@ import com.moneyforward.gradle.provider.PackageRepositoryCredentialProvider
 import com.moneyforward.gradle.provider.PackageRepositoryUriProvider
 
 /**
- * A GitHub repository definition containing a URL and [credentials provider][com.moneyforward.gradle.provider.PackageRepositoryCredentialProvider]
+ * A Package repository definition containing a URL and [credentials provider][com.moneyforward.gradle.provider.PackageRepositoryCredentialProvider]
  */
 open class DefaultPackageRepository(
     override var uriProvider: PackageRepositoryUriProvider,
-    override var credentialProvider: PackageRepositoryCredentialProvider
+    override var credentialProvider: PackageRepositoryCredentialProvider,
 ) : PackageRepository

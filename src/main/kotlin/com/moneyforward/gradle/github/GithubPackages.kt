@@ -19,7 +19,9 @@ fun gpr(ownerAndRepository: String): URI {
  * @param repository the repository under the owner's account (example: private-repository-plugin)
  * @return the built GPR URI (example: https://maven.pkg.github.com/evanc-mfw/private-repository-plugin)
  */
-fun gpr(owner: String, repository: String): URI {
+fun gpr(
+    owner: String,
+    repository: String,
+): URI {
     return URI(GPR_URL + owner.trim('/') + '/' + repository.trim('/'))
 }
-

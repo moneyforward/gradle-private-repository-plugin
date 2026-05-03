@@ -21,7 +21,7 @@ open class CodeArtifactRepository : PackageRepository {
 
     constructor(
         uriProvider: PackageRepositoryUriProvider,
-        credentialProvider: PackageRepositoryCredentialProvider
+        credentialProvider: PackageRepositoryCredentialProvider,
     ) {
         this.uriProvider = uriProvider
         this.credentialProvider = credentialProvider
@@ -45,14 +45,20 @@ open class CodeArtifactRepository : PackageRepository {
 
         var uriEnvironmentVar: String
             get() = uriEnvProvider.uriEnvironmentVar
-            set(value) { uriEnvProvider.uriEnvironmentVar = value }
+            set(value) {
+                uriEnvProvider.uriEnvironmentVar = value
+            }
 
         var usernameEnvironmentVar: String
             get() = credentialEnvProvider.usernameEnvironmentVar
-            set(value) { credentialEnvProvider.usernameEnvironmentVar = value }
+            set(value) {
+                credentialEnvProvider.usernameEnvironmentVar = value
+            }
 
         var tokenEnvironmentVar: String
             get() = credentialEnvProvider.tokenEnvironmentVar
-            set(value) { credentialEnvProvider.tokenEnvironmentVar = value }
+            set(value) {
+                credentialEnvProvider.tokenEnvironmentVar = value
+            }
     }
 }
