@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.moneyforward.gradle"
-version = "0.5.2"
+version = "0.6.0"
 
 repositories {
     mavenCentral()
@@ -21,7 +21,9 @@ kotlin {
 }
 
 dependencies {
-    implementation("aws.sdk.kotlin:codeartifact:1.5.123") // Last version with kotlin 2.2 support
+    implementation("software.amazon.awssdk:codeartifact:2.29.52")
+    implementation("software.amazon.awssdk:sso:2.29.52")
+    implementation("software.amazon.awssdk:ssooidc:2.29.52")
 }
 
 ktlint {
