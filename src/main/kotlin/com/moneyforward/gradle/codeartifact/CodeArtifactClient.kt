@@ -1,42 +1,30 @@
 package com.moneyforward.gradle.codeartifact
 
-import aws.sdk.kotlin.runtime.auth.credentials.ProfileCredentialsProvider
-import aws.sdk.kotlin.services.codeartifact.CodeartifactClient
-import kotlinx.coroutines.runBlocking
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider
+import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.codeartifact.CodeartifactClient as AwsCodeartifactClient
 
-/**
- * Singleton that manages a shared [CodeartifactClient] instance for the build lifetime.
- */
 object CodeArtifactClient {
-    private var client: CodeartifactClient? = null
+    private var client: AwsCodeartifactClient? = null
 
-    /**
-     * Returns the shared [CodeartifactClient], creating it if it does not yet exist.
-     *
-     * @param details Connection details used to configure credentials on first call.
-     */
     @Synchronized
-    fun get(details: CodeArtifactDetails): CodeartifactClient {
+    fun get(details: CodeArtifactDetails): AwsCodeartifactClient {
         if (client != null) return client!!
-        return runBlocking { createClient(details) }
+        return createClient(details).also { client = it }
     }
 
-    /**
-     * Creates a [CodeartifactClient] using the credential strategy indicated by [details].
-     *
-     * Uses a named SSO profile when [CodeArtifactDetails.ssoProfile] is set,
-     * otherwise falls back to the default AWS credential chain.
-     */
-    private suspend fun createClient(details: CodeArtifactDetails): CodeartifactClient {
-        val profile = details.ssoProfile
-        client = if (profile == null) {
-            CodeartifactClient.fromEnvironment()
-        } else {
-            CodeartifactClient {
-                credentialsProvider = ProfileCredentialsProvider(profile, region = details.region)
-                region = details.region
+    private fun createClient(details: CodeArtifactDetails): AwsCodeartifactClient {
+        var credentialsProvider = DefaultCredentialsProvider.create()
+        if (details.ssoProfile != null) {
+            credentialsProvider = credentialsProvider.copy {
+                it.profileName(details.ssoProfile)
             }
         }
-        return client!!
+
+        return AwsCodeartifactClient
+            .builder()
+            .apply { details.region?.let { region(Region.of(it)) } }
+            .credentialsProvider(credentialsProvider)
+            .build()
     }
 }
