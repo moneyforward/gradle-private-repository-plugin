@@ -67,10 +67,14 @@ class ChainException(
             }
         }
 
-        private fun exceptionTree(ex: Throwable): Sequence<Throwable> = sequence {
+        private fun exceptionTree(
+            ex: Throwable,
+            visited: MutableSet<Throwable> = HashSet(),
+        ): Sequence<Throwable> = sequence {
+            if (!visited.add(ex)) return@sequence
             yield(ex)
-            ex.suppressed.forEach { yieldAll(exceptionTree(it)) }
-            ex.cause?.let { yieldAll(exceptionTree(it)) }
+            ex.suppressed.forEach { yieldAll(exceptionTree(it, visited)) }
+            ex.cause?.let { yieldAll(exceptionTree(it, visited)) }
         }
     }
 }
