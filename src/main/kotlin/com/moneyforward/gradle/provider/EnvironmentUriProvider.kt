@@ -13,7 +13,7 @@ import java.net.URISyntaxException
  * @throws URISyntaxException if the environment variable value is not a valid URI.
  * @throws NullPointerException if the environment variable is not set.
  */
-class EnvironmentUriProvider(
+data class EnvironmentUriProvider(
     var uriEnvironmentVar: String = DEFAULT_VAR,
 ) : PackageRepositoryUriProvider {
     companion object {

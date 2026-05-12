@@ -11,7 +11,7 @@ import com.moneyforward.gradle.exception.EnvironmentException
  * @param tokenEnvironmentVar The environment variable name for the repository token.
  * @throws NullPointerException if the token environment variable is not set.
  */
-class EnvironmentCredentialProvider(
+data class EnvironmentCredentialProvider(
     var usernameEnvironmentVar: String = DEFAULT_USERNAME_VAR,
     var tokenEnvironmentVar: String = DEFAULT_TOKEN_VAR,
 ) : PackageRepositoryCredentialProvider {

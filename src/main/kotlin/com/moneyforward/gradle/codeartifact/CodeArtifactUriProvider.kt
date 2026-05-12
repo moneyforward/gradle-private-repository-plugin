@@ -5,7 +5,7 @@ import com.moneyforward.gradle.provider.PackageRepositoryUriProvider
 import software.amazon.awssdk.services.codeartifact.model.PackageFormat
 import java.net.URI
 
-class CodeArtifactUriProvider(
+data class CodeArtifactUriProvider(
     val details: CodeArtifactDetails,
 ) : PackageRepositoryUriProvider {
     override fun getUri(propertyDelegate: PropertyDelegate): URI {

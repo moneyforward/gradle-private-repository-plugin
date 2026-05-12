@@ -8,7 +8,7 @@ import java.net.URI
  *
  * @param uri The repository endpoint URL to return on every call.
  */
-class StaticUriProvider(
+data class StaticUriProvider(
     private val uri: URI,
 ) : PackageRepositoryUriProvider {
     override fun getUri(propertyDelegate: PropertyDelegate): URI {

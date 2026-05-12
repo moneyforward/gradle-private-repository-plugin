@@ -4,7 +4,7 @@ import com.moneyforward.gradle.PackageRepositoryCredentials
 import com.moneyforward.gradle.PropertyDelegate
 import com.moneyforward.gradle.provider.PackageRepositoryCredentialProvider
 
-class CodeArtifactCredentialProvider(
+data class CodeArtifactCredentialProvider(
     private val details: CodeArtifactDetails,
     private val username: String? = null,
 ) : PackageRepositoryCredentialProvider {
