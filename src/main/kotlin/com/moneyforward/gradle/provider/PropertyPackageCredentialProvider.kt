@@ -59,4 +59,22 @@ open class PropertyPackageCredentialProvider internal constructor(
         if (string.isNullOrEmpty()) throw IllegalArgumentException("String cannot be null or empty")
         return string
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PropertyPackageCredentialProvider
+
+        if (usernameProperty != other.usernameProperty) return false
+        if (tokenProperty != other.tokenProperty) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = usernameProperty.hashCode()
+        result = 31 * result + tokenProperty.hashCode()
+        return result
+    }
 }

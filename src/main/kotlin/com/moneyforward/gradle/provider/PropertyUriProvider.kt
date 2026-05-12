@@ -23,4 +23,17 @@ class PropertyUriProvider internal constructor(
             )
         }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as PropertyUriProvider
+
+        return uriProperty == other.uriProperty
+    }
+
+    override fun hashCode(): Int {
+        return uriProperty.hashCode()
+    }
 }

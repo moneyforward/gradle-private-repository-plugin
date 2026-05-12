@@ -24,4 +24,28 @@ class CodeArtifactDetails {
         this.region = region
         this.ssoProfile = ssoProfile
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CodeArtifactDetails
+
+        if (domain != other.domain) return false
+        if (repository != other.repository) return false
+        if (domainOwner != other.domainOwner) return false
+        if (ssoProfile != other.ssoProfile) return false
+        if (region != other.region) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = domain.hashCode()
+        result = 31 * result + repository.hashCode()
+        result = 31 * result + (domainOwner?.hashCode() ?: 0)
+        result = 31 * result + (ssoProfile?.hashCode() ?: 0)
+        result = 31 * result + (region?.hashCode() ?: 0)
+        return result
+    }
 }

@@ -65,4 +65,22 @@ open class CodeArtifactRepository : PackageRepository {
                 credentialEnvProvider.tokenEnvironmentVar = value
             }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as CodeArtifactRepository
+
+        if (uriProvider != other.uriProvider) return false
+        if (credentialProvider != other.credentialProvider) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = uriProvider.hashCode()
+        result = 31 * result + credentialProvider.hashCode()
+        return result
+    }
 }

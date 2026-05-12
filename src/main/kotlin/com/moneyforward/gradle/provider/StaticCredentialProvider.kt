@@ -8,7 +8,7 @@ import com.moneyforward.gradle.PropertyDelegate
  * @param username the repository username to return in credentials
  * @param token the repository token to return in credentials
  */
-class StaticCredentialProvider(
+data class StaticCredentialProvider(
     private val username: String,
     private val token: String,
 ) : PackageRepositoryCredentialProvider {
