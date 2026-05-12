@@ -83,5 +83,4 @@ open class CodeArtifactRepository : PackageRepository {
         result = 31 * result + credentialProvider.hashCode()
         return result
     }
-
 }
