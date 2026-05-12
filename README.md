@@ -96,15 +96,10 @@ dependencyResolutionManagement {
 `privatePlugins` and `privateDependencies` are independent — if the same repository is needed for
 both, declare it in both blocks (or extract a shared configuration lambda on the call site).
 
-#### GitHub Packages default credentials
+##### Note on `settings.gradle.kts` usage in project plugins
 
-By default, GitHub Packages repositories read credentials from Gradle project properties:
-
-```properties
-# ~/.gradle/gradle.properties
-private-repository.github.username=YOUR_GITHUB_USERNAME
-private-repository.github.token=YOUR_GITHUB_TOKEN
-```
+When the plugin is applied in `settings.gradle.kts`, it may cause resolution issue when dependency resolution look up only in private repo(s).
+Pls additionally configure `private` section in project plugin `build.gradle.kts` to avoid the issue.
 
 #### AWS CodeArtifact credentials
 
