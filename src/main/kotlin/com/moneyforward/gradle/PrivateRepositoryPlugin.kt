@@ -6,6 +6,7 @@ import org.gradle.api.Project
 import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.api.initialization.Settings
 import org.gradle.api.logging.Logger
+import org.gradle.api.logging.Logging
 import org.gradle.api.provider.Provider
 
 /**
@@ -45,9 +46,8 @@ class PrivateRepositoryPlugin : Plugin<Any> {
         internal const val USERNAME_PROPERTY = "private-repository.general.username"
         internal const val TOKEN_PROPERTY = "private-repository.general.token"
         internal const val URL_PROPERTY = "private-repository.general.url"
+        private var logger: Logger? = Logging.getLogger(PrivateRepositoryPlugin::class.java)
     }
-
-    private var logger: Logger? = null
 
     override fun apply(target: Any) {
         when (target) {
