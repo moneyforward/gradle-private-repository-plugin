@@ -1,3 +1,5 @@
+val awsSdkVersion: String = "2.44.5"
+
 plugins {
     kotlin("jvm") version "2.2.20"
     id("com.gradle.plugin-publish") version "1.2.1"
@@ -6,7 +8,7 @@ plugins {
 }
 
 group = "com.moneyforward.gradle"
-version = "0.6.2"
+version = "0.6.3"
 
 repositories {
     mavenCentral()
@@ -21,9 +23,9 @@ kotlin {
 }
 
 dependencies {
-    implementation("software.amazon.awssdk:codeartifact:2.29.52")
-    implementation("software.amazon.awssdk:sso:2.29.52")
-    implementation("software.amazon.awssdk:ssooidc:2.29.52")
+    implementation("software.amazon.awssdk:codeartifact:$awsSdkVersion")
+    implementation("software.amazon.awssdk:sso:$awsSdkVersion")
+    implementation("software.amazon.awssdk:ssooidc:$awsSdkVersion")
 }
 
 ktlint {
