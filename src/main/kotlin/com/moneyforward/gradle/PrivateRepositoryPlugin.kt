@@ -152,7 +152,7 @@ class PrivateRepositoryPlugin : Plugin<Any> {
 
         private fun <T> Provider<T>.orElse(`else`: () -> Provider<T>): Provider<T> {
             if (isPresent) return this
-            return orElse(`else`)
+            return`else`()
         }
     }
 }

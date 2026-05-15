@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.moneyforward.gradle"
-version = "0.6.3"
+version = "0.6.4"
 
 repositories {
     mavenCentral()
