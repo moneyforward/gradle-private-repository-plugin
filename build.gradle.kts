@@ -1,4 +1,4 @@
-val awsSdkVersion: String = "2.44.5"
+val awsSdkVersion: String = "2.54.13"
 
 plugins {
     kotlin("jvm") version "2.2.20"
@@ -8,7 +8,7 @@ plugins {
 }
 
 group = "com.moneyforward.gradle"
-version = "0.6.4"
+version = "0.6.5"
 
 repositories {
     mavenCentral()
