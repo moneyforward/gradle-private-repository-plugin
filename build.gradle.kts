@@ -1,14 +1,14 @@
 val awsSdkVersion: String = "2.54.13"
 
 plugins {
-    kotlin("jvm") version "2.2.20"
+    kotlin("jvm") version "2.4.21"
     id("com.gradle.plugin-publish") version "1.2.1"
     id("org.jlleitschuh.gradle.ktlint") version "14.0.1"
     `java-gradle-plugin`
 }
 
 group = "com.moneyforward.gradle"
-version = "0.6.5"
+version = "0.6.6"
 
 repositories {
     mavenCentral()
